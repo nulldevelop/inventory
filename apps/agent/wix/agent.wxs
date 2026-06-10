@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Id="*" Name="NetWatch - Hardware Monitoring Agent" Language="1033" Version="3.4.0.0" Manufacturer="NullPHR Development" UpgradeCode="e20c718e-c91f-4823-9d59-a3a459639a24">
+        <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+        <MajorUpgrade
+            AllowSameVersionUpgrades="yes"
+            Schedule="afterInstallInitialize"
+            DowngradeErrorMessage="Uma versão mais nova de [ProductName] já está instalada." />
+        <MediaTemplate EmbedCab="yes" />
+
+        <!-- Propriedades configuráveis via linha de comando -->
+        <!-- TESTE LOCAL: reverter para https://netwatch.nullphr.com.br/api/ingest antes de release -->
+        <Property Id="API_URL" Value="http://localhost:3000/api/ingest" />
+        <Property Id="INTERVAL" Value="28800" />
+
+        <!-- ============================================================
+             Cadastro informado na instalação (Nome/Secretaria/Departamento).
+             RegistrySearch popula as propriedades a partir do que já existe
+             no registro, garantindo que o MajorUpgrade silencioso (/quiet)
+             regrave os mesmos valores em vez de apagá-los.
+             ============================================================ -->
+        <Property Id="REG_USERNAME" Secure="yes">
+            <RegistrySearch Id="SearchRegUserName" Root="HKLM" Key="SOFTWARE\NetWatch\Agent" Name="UserName" Type="raw" Win64="yes" />
+        </Property>
+        <Property Id="REG_SECRETARIA" Secure="yes">
+            <RegistrySearch Id="SearchRegSecretaria" Root="HKLM" Key="SOFTWARE\NetWatch\Agent" Name="Secretaria" Type="raw" Win64="yes" />
+        </Property>
+        <Property Id="REG_DEPARTAMENTO" Secure="yes">
+            <RegistrySearch Id="SearchRegDepartamento" Root="HKLM" Key="SOFTWARE\NetWatch\Agent" Name="Departamento" Type="raw" Win64="yes" />
+        </Property>
+
+        <Feature Id="ProductFeature" Title="Hardware Agent" Level="1">
+            <ComponentGroupRef Id="ProductComponents" />
+        </Feature>
+
+        <!-- Interface de instalação com a tela de cadastro -->
+        <UIRef Id="CadastroUI" />
+    </Product>
+
+    <Fragment>
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFiles64Folder">
+                <Directory Id="INSTALLFOLDER" Name="HardwareAgent" />
+            </Directory>
+        </Directory>
+    </Fragment>
+
+    <Fragment>
+        <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+            <Component Id="AgentExecutable" Guid="d6da1d43-0612-44c2-bad3-a4451d403c26">
+                <File Id="AgentExe" Source="agent.exe" KeyPath="yes" Checksum="yes" />
+
+                <!-- Variáveis de Ambiente para Configuração -->
+                <Environment Id="EnvApiUrl" Name="AGENT_API_URL" Value="[API_URL]" Action="set" Part="all" System="yes" />
+                <Environment Id="EnvInterval" Name="AGENT_INTERVAL_SECONDS" Value="[INTERVAL]" Action="set" Part="all" System="yes" />
+
+                <!-- Service Installation -->
+                <ServiceInstall Id="ServiceInstaller"
+                                Type="ownProcess"
+                                Name="HardwareAgent"
+                                DisplayName="Hardware Monitoring Agent"
+                                Description="Collects and sends hardware metrics to a REST API."
+                                Start="auto"
+                                Account="LocalSystem"
+                                ErrorControl="normal" />
+
+                <!-- Service Control -->
+                <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="HardwareAgent" Wait="yes" />
+            </Component>
+
+            <!-- Cadastro gravado no registro 64-bit (lido pelo agente amd64) -->
+            <Component Id="RegistrationRegistry" Guid="f13002bd-0354-4396-88ed-6a5a15da0462" Win64="yes">
+                <RegistryKey Root="HKLM" Key="SOFTWARE\NetWatch\Agent">
+                    <RegistryValue Name="UserName" Type="string" Value="[REG_USERNAME]" KeyPath="yes" />
+                    <RegistryValue Name="Secretaria" Type="string" Value="[REG_SECRETARIA]" />
+                    <RegistryValue Name="Departamento" Type="string" Value="[REG_DEPARTAMENTO]" />
+                </RegistryKey>
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+
+    <!-- ================================================================
+         UI: tela única de cadastro antes da instalação. Reutiliza os
+         diálogos comuns do WixUIExtension (erro/cancelar/progresso) via
+         WixUI_Common. Em instalação silenciosa a InstallUISequence é
+         ignorada e os valores vêm do RegistrySearch acima.
+         ================================================================ -->
+    <Fragment>
+        <UI Id="CadastroUI">
+            <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+            <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
+            <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+            <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+
+            <DialogRef Id="ErrorDlg" />
+            <DialogRef Id="FatalError" />
+            <DialogRef Id="FilesInUse" />
+            <DialogRef Id="MsiRMFilesInUse" />
+            <DialogRef Id="PrepareDlg" />
+            <DialogRef Id="ProgressDlg" />
+            <DialogRef Id="ResumeDlg" />
+            <DialogRef Id="UserExit" />
+            <DialogRef Id="ExitDialog" />
+
+            <Dialog Id="CadastroDlg" Width="370" Height="270" Title="Cadastro do Agente NetWatch">
+                <Control Id="Title" Type="Text" X="15" Y="15" Width="340" Height="15" Transparent="yes" NoPrefix="yes">
+                    <Text>{\WixUI_Font_Title}Identificação da máquina</Text>
+                </Control>
+                <Control Id="Description" Type="Text" X="15" Y="33" Width="340" Height="20" Transparent="yes" NoPrefix="yes">
+                    <Text>Informe os dados de cadastro. Eles serão enviados junto com a telemetria.</Text>
+                </Control>
+                <Control Id="BannerLine" Type="Line" X="0" Y="58" Width="370" Height="0" />
+
+                <Control Id="NameLabel" Type="Text" X="20" Y="75" Width="120" Height="12" NoPrefix="yes" Text="Nome (usuário):" />
+                <Control Id="NameEdit" Type="Edit" X="20" Y="88" Width="330" Height="18" Property="REG_USERNAME" Indirect="no" />
+
+                <Control Id="SecretariaLabel" Type="Text" X="20" Y="115" Width="120" Height="12" NoPrefix="yes" Text="Secretaria:" />
+                <Control Id="SecretariaCombo" Type="ComboBox" X="20" Y="128" Width="330" Height="18" Property="REG_SECRETARIA" Sorted="no" ComboList="yes">
+                    <ComboBox Property="REG_SECRETARIA">
+                        <ListItem Text="Administração" Value="Administração" />
+                        <ListItem Text="Cultura" Value="Cultura" />
+                        <ListItem Text="Desenvolvimento Econômico" Value="Desenvolvimento Econômico" />
+                        <ListItem Text="Desenvolvimento Social" Value="Desenvolvimento Social" />
+                        <ListItem Text="Desenvolvimento Sustentável" Value="Desenvolvimento Sustentável" />
+                        <ListItem Text="Educação" Value="Educação" />
+                        <ListItem Text="Governo e Assuntos Jurídicos" Value="Governo e Assuntos Jurídicos" />
+                        <ListItem Text="Infraestrutura" Value="Infraestrutura" />
+                        <ListItem Text="Mulher e Igualdade Racial" Value="Mulher e Igualdade Racial" />
+                        <ListItem Text="Ordem Pública e Segurança" Value="Ordem Pública e Segurança" />
+                        <ListItem Text="Saúde" Value="Saúde" />
+                        <ListItem Text="Tecnologia da Informação" Value="Tecnologia da Informação" />
+                        <ListItem Text="Urbanismo" Value="Urbanismo" />
+                        <ListItem Text="Procuradoria" Value="Procuradoria" />
+                    </ComboBox>
+                </Control>
+
+                <Control Id="DepartamentoLabel" Type="Text" X="20" Y="155" Width="200" Height="12" NoPrefix="yes" Text="Departamento:" />
+                <Control Id="DepartamentoEdit" Type="Edit" X="20" Y="168" Width="330" Height="18" Property="REG_DEPARTAMENTO" Indirect="no" />
+
+                <Control Id="Hint" Type="Text" X="20" Y="195" Width="330" Height="12" Transparent="yes" NoPrefix="yes">
+                    <Text>{\WixUI_Font_Normal}Os três campos são obrigatórios.</Text>
+                </Control>
+
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+                <Control Id="Install" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Instalar">
+                    <Condition Action="disable"><![CDATA[REG_USERNAME = "" OR REG_SECRETARIA = "" OR REG_DEPARTAMENTO = ""]]></Condition>
+                    <Condition Action="enable"><![CDATA[REG_USERNAME <> "" AND REG_SECRETARIA <> "" AND REG_DEPARTAMENTO <> ""]]></Condition>
+                    <Publish Event="EndDialog" Value="Return">1</Publish>
+                </Control>
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancelar">
+                    <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+                </Control>
+            </Dialog>
+
+            <!-- Botão Finish do diálogo de saída padrão -->
+            <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return">1</Publish>
+
+            <!-- Mostra a tela de cadastro apenas em instalação nova e interativa -->
+            <InstallUISequence>
+                <Show Dialog="CadastroDlg" Before="ProgressDlg"><![CDATA[NOT Installed]]></Show>
+            </InstallUISequence>
+        </UI>
+
+        <UIRef Id="WixUI_Common" />
+    </Fragment>
+</Wix>

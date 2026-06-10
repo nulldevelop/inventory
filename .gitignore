@@ -1,0 +1,30 @@
+# Node / Next.js (apps/web)
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+# Prisma client gerado
+apps/web/src/generated/
+
+# Variáveis de ambiente
+.env
+.env.*
+!.env.example
+
+# Go (apps/agent)
+*.exe
+*.msi
+*.wixpdb
+*.test
+*.out
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*

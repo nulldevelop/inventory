@@ -1,0 +1,350 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* =========================================================================
+   NetWatch — Design tokens
+   Um único sistema semântico, em duas camadas: claro (:root) e escuro (.dark).
+   As primitivas (ui/*) consomem o vocabulário shadcn; os componentes de domínio
+   consomem os mesmos tokens (+ aliases legados mantidos durante a migração).
+   ========================================================================= */
+
+:root {
+  --radius: 0.625rem;
+
+  /* superfícies / texto */
+  --background: oklch(0.985 0.004 175);
+  --foreground: oklch(0.22 0.018 175);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.018 175);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.018 175);
+
+  /* identidade — verde-petróleo (#00674f) */
+  --primary: oklch(0.46 0.082 168);
+  --primary-foreground: oklch(0.99 0.003 175);
+
+  --secondary: oklch(0.96 0.006 175);
+  --secondary-foreground: oklch(0.28 0.02 175);
+  --muted: oklch(0.965 0.005 175);
+  --muted-foreground: oklch(0.5 0.013 175);
+  --accent: oklch(0.95 0.012 170);
+  --accent-foreground: oklch(0.28 0.03 170);
+
+  --destructive: oklch(0.58 0.214 27);
+  --destructive-foreground: oklch(0.99 0.003 175);
+
+  --border: oklch(0.9 0.008 175);
+  --input: oklch(0.89 0.008 175);
+  --ring: oklch(0.46 0.082 168);
+
+  /* domínio — status / severidade */
+  --status-online: oklch(0.56 0.13 158);
+  --status-offline: oklch(0.58 0.214 27);
+  --status-warn: oklch(0.7 0.15 75);
+  --status-idle: oklch(0.6 0.013 175);
+
+  /* atmosfera */
+  --glow: oklch(0.46 0.082 168 / 0.05);
+  --grid-line: oklch(0.46 0.082 168 / 0.04);
+}
+
+.dark {
+  /* fundo com leve tom esverdeado (menos "preto chapado") */
+  --background: oklch(0.19 0.018 170);
+  --foreground: oklch(0.97 0.006 170);
+  --card: oklch(0.235 0.022 170);
+  --card-foreground: oklch(0.97 0.006 170);
+  --popover: oklch(0.235 0.022 170);
+  --popover-foreground: oklch(0.97 0.006 170);
+
+  /* verde vivo e legível em fundo escuro (esmeralda-petróleo) */
+  --primary: oklch(0.74 0.15 162);
+  --primary-foreground: oklch(0.17 0.02 170);
+
+  --secondary: oklch(0.28 0.02 170);
+  --secondary-foreground: oklch(0.95 0.008 170);
+  --muted: oklch(0.285 0.02 170);
+  --muted-foreground: oklch(0.76 0.022 166);
+  --accent: oklch(0.33 0.035 166);
+  --accent-foreground: oklch(0.96 0.008 170);
+
+  --destructive: oklch(0.66 0.2 25);
+  --destructive-foreground: oklch(0.98 0.005 170);
+
+  --border: oklch(0.34 0.022 170);
+  --input: oklch(0.36 0.022 170);
+  --ring: oklch(0.74 0.15 162);
+
+  --status-online: oklch(0.78 0.17 158);
+  --status-offline: oklch(0.68 0.2 25);
+  --status-warn: oklch(0.82 0.15 80);
+  --status-idle: oklch(0.66 0.016 170);
+
+  /* atmosfera com mais presença de verde */
+  --glow: oklch(0.74 0.15 162 / 0.13);
+  --grid-line: oklch(0.74 0.15 162 / 0.06);
+}
+
+@theme inline {
+  /* radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* vocabulário shadcn → tokens */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* domínio */
+  --color-online: var(--status-online);
+  --color-offline: var(--status-offline);
+  --color-warn: var(--status-warn);
+  --color-idle: var(--status-idle);
+
+  /* ── aliases legados (mantidos durante a migração dos componentes) ── */
+  --color-bg: var(--background);
+  --color-surface: var(--card);
+  --color-surface2: var(--muted);
+  --color-border-hi: var(--primary);
+  --color-accent-dim: var(--primary);
+  --color-text: var(--foreground);
+  --color-text-muted: var(--muted-foreground);
+  --color-text-dim: var(--secondary-foreground);
+  --color-green: var(--status-online);
+  --color-red: var(--status-offline);
+  --color-blue: var(--primary);
+  --color-purple: var(--primary);
+  --color-cyan: var(--primary);
+
+  --font-mono: "IBM Plex Mono", monospace;
+  --font-sans: "DM Sans", sans-serif;
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--background);
+  color: var(--foreground);
+  min-height: 100vh;
+  overflow-y: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── ATMOSFERA (sutil, sem o exagero NOC) ── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -8%, var(--glow) 0%, transparent 60%),
+    radial-gradient(
+      ellipse 50% 35% at 85% 110%,
+      var(--glow) 0%,
+      transparent 55%
+    );
+}
+
+/* grid discreto, só visível com leveza */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(
+    ellipse 85% 75% at 50% 40%,
+    black 10%,
+    transparent 75%
+  );
+}
+
+/* ── ANIMAÇÕES ── */
+@keyframes pulse-green {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 oklch(0.74 0.16 156 / 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 5px oklch(0.74 0.16 156 / 0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.35;
+    filter: blur(18px);
+  }
+  50% {
+    opacity: 0.6;
+    filter: blur(22px);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-marquee {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 15s linear infinite;
+}
+
+.marquee-container {
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* ── GAUGE RING ── */
+.gauge-ring {
+  transform: rotate(-90deg);
+  transform-origin: center;
+}
+.gauge-track {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 3.5;
+}
+.gauge-fill {
+  fill: none;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── RESPONSIVO ── */
+@media (max-width: 1200px) {
+  .grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .grid-cols-4 > .col-span-2,
+  .grid-cols-4 > .col-span-4 {
+    grid-column: span 2;
+  }
+  .grid-cols-\[1fr_2fr\] {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 860px) {
+  .grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  .grid-cols-4 > .col-span-2,
+  .grid-cols-4 > .col-span-4 {
+    grid-column: span 2;
+  }
+  .grid-cols-\[1fr_2fr\] {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid-cols-4 {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+  .grid-cols-4 > .col-span-2,
+  .grid-cols-4 > .col-span-4,
+  .grid-cols-4 > .col-span-1 {
+    grid-column: 1;
+  }
+  .grid-cols-\[1fr_2fr\] {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// Estado ao vivo dos agentes (substitui o Map() em memória do Express)
+
+model Agent {
+  serialNumber    String      @id
+  hostname        String
+  osJson          Json? // campo "os" do payload
+  cpuUsagePercent Float       @default(0)
+  memoryJson      Json? // campo "memory" do payload
+  disksJson       Json? // campo "disks" do payload
+  cpuTemp         Float?
+  rawJson         Json // payload completo para o DetailView
+  isOnline        Boolean     @default(true)
+  lastUpdateAt    DateTime    @default(now()) @updatedAt
+  alias           AgentAlias?
+
+  @@index([lastUpdateAt])
+  @@index([isOnline])
+  @@index([hostname])
+}
+
+// Fila de comandos pendentes (substitui o Map() pendingCommands)
+
+model PendingCommand {
+  id        Int      @id @default(autoincrement())
+  hostname  String   @unique // apenas um comando por host
+  action    String // "shutdown" | "restart" | "lock"
+  createdAt DateTime @default(now())
+
+  @@index([hostname])
+}
+
+// Mantido sem alteração
+
+model AgentAlias {
+  serialNumber String   @id
+  customName   String
+  grupo        String?
+  subgrupo     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  agent        Agent?   @relation(fields: [serialNumber], references: [serialNumber], onDelete: Cascade)
+
+  @@index([customName])
+  @@index([grupo])
+  @@index([subgrupo])
+}
+
+// Controle de versão do agente para auto-update
+
+model AgentRelease {
+  id          Int      @id @default(autoincrement())
+  version     String   @unique
+  downloadUrl String   @db.Text
+  createdAt   DateTime @default(now())
+}
+
+// Mantido sem alteração
+
+model MetricSnapshot {
+  id           Int      @id @default(autoincrement())
+  serialNumber String
+  timestamp    DateTime @default(now())
+  cpuUsage     Float
+  memoryPct    Float
+  diskJson     String   @db.Text
+
+  @@index([serialNumber, timestamp])
+}
+
+// Histórico de mudanças de hardware dos agentes
+model HardwareChangeLog {
+  id           Int      @id @default(autoincrement())
+  serialNumber String
+  timestamp    DateTime @default(now())
+  component    String // "ram" | "cpu" | "gpu" | "disk"
+  field        String // campo específico que mudou (ex: "total_bytes", "model", "slots_count")
+  oldValue     String   @db.Text // valor anterior
+  newValue     String   @db.Text // valor novo
+  details      Json? // contexto extra (ex: snapshot completo do componente)
+
+  @@index([serialNumber, timestamp])
+  @@index([serialNumber, component])
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String?   @db.Text
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?  @db.Text
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?   @db.Text
+  refreshToken          String?   @db.Text
+  idToken               String?   @db.Text
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?   @db.Text
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String   @db.Text
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}

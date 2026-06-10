@@ -1,0 +1,3 @@
+packages:
+  - "apps/web"
+# apps/agent é um módulo Go (windows-hw-agent), não faz parte do workspace pnpm.
