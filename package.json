@@ -8,7 +8,7 @@
     "web:build": "pnpm --filter inventory-web build",
     "web:start": "pnpm --filter inventory-web start",
     "web:lint": "pnpm --filter inventory-web lint",
-    "agent:build": "cd apps/agent && go build -o agent.exe ./cmd/agent",
+    "agent:build": "cd apps/agent && powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1",
     "agent:run": "cd apps/agent && go run ./cmd/agent"
   },
   "engines": {

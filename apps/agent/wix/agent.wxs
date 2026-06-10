@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Id="*" Name="Inventory - Hardware Monitoring Agent" Language="1033" Version="3.5.0.0" Manufacturer="Null Development" UpgradeCode="e20c718e-c91f-4823-9d59-a3a459639a24">
+    <Product Id="*" Name="Inventory - Hardware Monitoring Agent" Language="1033" Version="1.0.0.0" Manufacturer="Null Development" UpgradeCode="e20c718e-c91f-4823-9d59-a3a459639a24">
         <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
         <MajorUpgrade
@@ -119,8 +119,11 @@
                 <Control Id="NameLabel" Type="Text" X="20" Y="75" Width="120" Height="12" NoPrefix="yes" Text="Nome (usuário):" />
                 <Control Id="NameEdit" Type="Edit" X="20" Y="88" Width="330" Height="18" Property="REG_USERNAME" Indirect="no" />
 
-                <Control Id="SecretariaLabel" Type="Text" X="20" Y="115" Width="120" Height="12" NoPrefix="yes" Text="Secretaria:" />
-                <Control Id="SecretariaCombo" Type="ComboBox" X="20" Y="128" Width="330" Height="18" Property="REG_SECRETARIA" Sorted="no" ComboList="yes">
+                <Control Id="DepartamentoLabel" Type="Text" X="20" Y="115" Width="200" Height="12" NoPrefix="yes" Text="Departamento:" />
+                <Control Id="DepartamentoEdit" Type="Edit" X="20" Y="128" Width="330" Height="18" Property="REG_DEPARTAMENTO" Indirect="no" />
+
+                <Control Id="SecretariaLabel" Type="Text" X="20" Y="155" Width="120" Height="12" NoPrefix="yes" Text="Secretaria:" />
+                <Control Id="SecretariaCombo" Type="ComboBox" X="20" Y="168" Width="330" Height="18" Property="REG_SECRETARIA" Sorted="no" ComboList="yes">
                     <ComboBox Property="REG_SECRETARIA">
                         <ListItem Text="Administração" Value="Administração" />
                         <ListItem Text="Cultura" Value="Cultura" />
@@ -138,9 +141,6 @@
                         <ListItem Text="Procuradoria" Value="Procuradoria" />
                     </ComboBox>
                 </Control>
-
-                <Control Id="DepartamentoLabel" Type="Text" X="20" Y="155" Width="200" Height="12" NoPrefix="yes" Text="Departamento:" />
-                <Control Id="DepartamentoEdit" Type="Edit" X="20" Y="168" Width="330" Height="18" Property="REG_DEPARTAMENTO" Indirect="no" />
 
                 <Control Id="Hint" Type="Text" X="20" Y="195" Width="330" Height="12" Transparent="yes" NoPrefix="yes">
                     <Text>{\WixUI_Font_Normal}Os três campos são obrigatórios.</Text>
