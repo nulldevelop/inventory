@@ -174,30 +174,29 @@ export default function DetailView({
       <HostHeader data={data} onEdit={onEdit} />
 
       <div className="flex flex-col gap-4 w-full">
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-start h-full w-full">
-          <CpuCard data={data} />
-          <RamCard data={data} />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-start h-full w-full">
+        {/* Identidade + Processador */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start w-full">
           <SystemCard data={data} />
-          <NetworkCard data={data} />
+          <CpuCard data={data} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-start h-full w-full">
-          <BiosCard data={data} />
+        {/* Memória + GPU */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start w-full">
+          <RamCard data={data} />
           <GpuCard data={data} />
         </div>
 
-        <div className="grid grid-cols-1 2xl:grid-cols-6 gap-4 w-full">
-          <div className="2xl:col-span-6 w-full">
-            <StorageCard data={data} />
-          </div>
+        {/* Firmware + Rede */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start w-full">
+          <BiosCard data={data} />
+          <NetworkCard data={data} />
         </div>
 
-        <div className="w-full">
-          <HardwareHistoryCard serialNumber={data.id} />
-        </div>
+        {/* Armazenamento (largura total) */}
+        <StorageCard data={data} />
+
+        {/* Histórico de hardware (largura total) */}
+        <HardwareHistoryCard serialNumber={data.id} />
       </div>
     </div>
   )

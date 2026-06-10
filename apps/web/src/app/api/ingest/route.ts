@@ -1,14 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import { checkThresholds } from '@/lib/alerts'
 import { prisma } from '@/lib/prisma'
-
-// Throttle de snapshots em memória de processo (OK para Vercel warm instances)
-const lastSaved = new Map<string, number>()
-// Cache de alertas ativos em memória de processo
-export const activeAlerts = new Map<
-  string,
-  { hostname: string; alerts: { type: string; msg: string }[]; ts: number }
->()
 
 // O baseline para detecção de mudança de hardware é o rawJson PERSISTIDO do
 // agente (comparado no POST), então sobrevive a restart do servidor e ao
@@ -227,8 +218,6 @@ function detectHardwareChanges(
   return changes
 }
 
-const THREE_HOURS_MS = 3 * 60 * 60 * 1000
-
 // Throttle de atualização do rawJson (campo pesado)
 const lastFullSave = new Map<string, number>()
 const FULL_SAVE_INTERVAL_MS = 60_000 // 1 minuto
@@ -273,14 +262,12 @@ export async function POST(req: NextRequest) {
     changes = detectHardwareChanges(previousHw, currentHw)
   }
 
-  // Preparar campos de atualização
+  // Preparar campos de atualização (inventário)
   const updateData: any = {
     hostname,
-    cpuUsagePercent: body.cpu_usage_percent || 0,
     memoryJson: body.memory ?? undefined,
     disksJson: body.disks ?? undefined,
     osJson: body.os ?? undefined,
-    cpuTemp: body.cpu_temp ?? null,
     isOnline: true,
     lastUpdateAt: new Date(),
   }
@@ -300,11 +287,9 @@ export async function POST(req: NextRequest) {
     create: {
       serialNumber,
       hostname,
-      cpuUsagePercent: body.cpu_usage_percent || 0,
       memoryJson: body.memory ?? undefined,
       disksJson: body.disks ?? undefined,
       osJson: body.os ?? undefined,
-      cpuTemp: body.cpu_temp ?? null,
       rawJson: body,
       isOnline: true,
     },
@@ -331,14 +316,6 @@ export async function POST(req: NextRequest) {
       .catch((e: Error) => console.error('AgentAlias auto-cadastro error:', e))
   }
 
-  // Alertas de threshold
-  const alerts = checkThresholds(body)
-  if (alerts.length > 0) {
-    activeAlerts.set(serialNumber, { hostname, alerts, ts: Date.now() })
-  } else {
-    activeAlerts.delete(serialNumber)
-  }
-
   // Registrar mudanças de hardware detectadas vs. o baseline persistido
   if (changes.length > 0) {
     prisma.hardwareChangeLog
@@ -353,22 +330,6 @@ export async function POST(req: NextRequest) {
         })),
       })
       .catch((e: Error) => console.error('HardwareChangeLog error:', e))
-  }
-
-  // Snapshot a cada 3 horas por agente
-  const last = lastSaved.get(serialNumber) || 0
-  if (Date.now() - last > THREE_HOURS_MS) {
-    lastSaved.set(serialNumber, Date.now())
-    prisma.metricSnapshot
-      .create({
-        data: {
-          serialNumber,
-          cpuUsage: body.cpu_usage_percent || 0,
-          memoryPct: body.memory?.percentage || 0,
-          diskJson: JSON.stringify(body.disks || []),
-        },
-      })
-      .catch((e: Error) => console.error('Snapshot error:', e))
   }
 
   return NextResponse.json({ message: 'Metrics received' })

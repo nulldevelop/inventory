@@ -38,7 +38,10 @@ func LoadConfig() Config {
 
 	apiToken := os.Getenv("AGENT_API_TOKEN")
 	if apiToken == "" {
-		apiToken = "default_token"
+		// Fallback para execução local (go run) sem a env var definida.
+		// Em produção o instalador WiX define AGENT_API_TOKEN no sistema.
+		// Deve casar com AGENT_TOKEN do backend.
+		apiToken = "7750acaf865bd4e507c5787e58d7a89b3f18746acde53f8f9cbac70f1638f627"
 	}
 
 	// Telemetria: 8h por padrão (override via AGENT_INTERVAL_SECONDS)

@@ -1,35 +1,6 @@
 'use client'
 import { PencilIcon } from 'lucide-react'
 import type { AgentSummary } from '@/lib/types'
-import { barClass } from '@/utils/format'
-
-function barColorVar(value: number): string {
-  const cls = barClass(value)
-  if (cls === 'danger') return 'var(--status-offline)'
-  if (cls === 'warn') return 'var(--status-warn)'
-  return 'var(--status-online)'
-}
-
-function Metric({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <div className="flex items-center justify-between">
-        <span className="font-(--font-mono) text-[9px] uppercase tracking-[1px] text-muted-foreground">
-          {label}
-        </span>
-        <span className="font-(--font-mono) text-[10px] tabular-nums text-foreground">
-          {value > 0 ? `${Math.round(value)}%` : '—'}
-        </span>
-      </div>
-      <div className="h-1 overflow-hidden rounded-full bg-muted">
-        <div
-          className="h-full rounded-full transition-all duration-700"
-          style={{ width: `${value}%`, background: barColorVar(value) }}
-        />
-      </div>
-    </div>
-  )
-}
 
 export default function AgentCard({
   agent,
@@ -42,10 +13,6 @@ export default function AgentCard({
   onEdit: (agent: AgentSummary) => void
   tvMode?: boolean
 }) {
-  const cpu = agent.cpu_usage_percent || 0
-  const ram = agent.memory?.percentage || 0
-  const gpu = agent.gpu_usage_percent || 0
-
   return (
     // biome-ignore lint/a11y/useSemanticElements: card é alvo de clique com botões internos
     <div
@@ -90,11 +57,22 @@ export default function AgentCard({
         </div>
       </div>
 
-      {/* Métricas */}
-      <div className="grid grid-cols-3 gap-2.5">
-        <Metric label="CPU" value={cpu} />
-        <Metric label="RAM" value={ram} />
-        <Metric label="GPU" value={gpu} />
+      {/* Secretaria / Grupo */}
+      <div className="flex flex-wrap items-center gap-1.5">
+        {agent.grupo ? (
+          <span className="inline-flex items-center rounded-md border border-primary/25 bg-primary/10 px-2 py-0.5 font-(--font-mono) text-[10px] font-medium text-primary">
+            {agent.grupo}
+          </span>
+        ) : (
+          <span className="font-(--font-mono) text-[10px] text-muted-foreground/50">
+            Sem secretaria
+          </span>
+        )}
+        {agent.subgrupo && (
+          <span className="inline-flex items-center rounded-md border border-border bg-muted px-2 py-0.5 font-(--font-mono) text-[10px] font-medium text-muted-foreground">
+            {agent.subgrupo}
+          </span>
+        )}
       </div>
 
       {/* Editar */}

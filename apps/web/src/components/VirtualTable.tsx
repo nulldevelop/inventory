@@ -5,7 +5,6 @@ import { ChevronUpIcon, PencilIcon } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useVirtualScroll } from '@/hooks/useVirtualScroll'
 import type { AgentSummary } from '@/lib/types'
-import { barClass } from '@/utils/format'
 
 type SortKey =
   | 'status'
@@ -13,37 +12,11 @@ type SortKey =
   | 'hostname'
   | 'grupo'
   | 'subgrupo'
-  | 'cpu'
-  | 'ram'
-  | 'gpu'
   | 'lastUpdate'
   | 'version'
 type SortDir = 'asc' | 'desc'
 
 const ROW_HEIGHT = 48
-
-function barColorVar(value: number): string {
-  const cls = barClass(value)
-  if (cls === 'danger') return 'var(--status-offline)'
-  if (cls === 'warn') return 'var(--status-warn)'
-  return 'var(--status-online)'
-}
-
-function InlineBar({ value }: { value: number }) {
-  return (
-    <div className="flex items-center gap-2">
-      <div className="h-1.5 w-15 overflow-hidden rounded-full bg-muted">
-        <div
-          className="h-full rounded-full transition-all duration-700"
-          style={{ width: `${value}%`, background: barColorVar(value) }}
-        />
-      </div>
-      <span className="w-9 font-(--font-mono) text-[13px] tabular-nums text-foreground">
-        {value > 0 ? `${value}%` : '—'}
-      </span>
-    </div>
-  )
-}
 
 function relativeTime(dateStr: string): { text: string; diffMs: number } {
   const diff = Date.now() - new Date(dateStr).getTime()
@@ -81,9 +54,6 @@ const COLUMNS: { key: SortKey; label: string; width: string }[] = [
   { key: 'hostname', label: 'Hostname', width: 'w-[150px] shrink-0' },
   { key: 'grupo', label: 'Secretaria', width: 'flex-1 min-w-[150px]' },
   { key: 'subgrupo', label: 'Grupo', width: 'flex-1 min-w-[150px]' },
-  { key: 'cpu', label: 'CPU', width: 'w-[110px] shrink-0' },
-  { key: 'ram', label: 'RAM', width: 'w-[110px] shrink-0' },
-  { key: 'gpu', label: 'GPU', width: 'w-[110px] shrink-0' },
   { key: 'version', label: 'Versão', width: 'w-[80px] shrink-0' },
   { key: 'lastUpdate', label: 'Visto', width: 'w-[90px] shrink-0' },
 ]
@@ -103,12 +73,6 @@ function getSortValue(
       return (agent.grupo || '').toLowerCase()
     case 'subgrupo':
       return (agent.subgrupo || '').toLowerCase()
-    case 'cpu':
-      return agent.cpu_usage_percent || 0
-    case 'ram':
-      return agent.memory?.percentage || 0
-    case 'gpu':
-      return agent.gpu_usage_percent || 0
     case 'lastUpdate':
       return new Date(agent.lastUpdate).getTime()
     case 'version':
@@ -262,9 +226,6 @@ export default function VirtualTable({
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
-              <div className="w-[110px] shrink-0" />
-              <div className="w-[110px] shrink-0" />
-              <div className="w-[110px] shrink-0" />
               <div className="w-[80px] shrink-0" />
               <div className="w-[90px] shrink-0" />
               <div className="w-9 shrink-0" />
@@ -284,9 +245,6 @@ export default function VirtualTable({
               {visibleItems.map(({ index, offsetTop }) => {
                 const agent = filteredAndSorted[index]
                 if (!agent) return null
-                const cpu = Math.round(agent.cpu_usage_percent || 0)
-                const ram = Math.round(agent.memory?.percentage || 0)
-                const gpu = Math.round(agent.gpu_usage_percent || 0)
 
                 return (
                   <div
@@ -353,17 +311,6 @@ export default function VirtualTable({
                           —
                         </span>
                       )}
-                    </div>
-
-                    {/* CPU / RAM / GPU */}
-                    <div className="w-27.5 shrink-0 px-2">
-                      <InlineBar value={cpu} />
-                    </div>
-                    <div className="w-27.5 shrink-0 px-2">
-                      <InlineBar value={ram} />
-                    </div>
-                    <div className="w-27.5 shrink-0 px-2">
-                      <InlineBar value={gpu} />
                     </div>
 
                     {/* Versão */}

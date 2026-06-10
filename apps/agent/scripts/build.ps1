@@ -1,11 +1,11 @@
 # Set build variables
-$AppName = "agent.exe"
-$MSIName = "HardwareAgent.msi"
+$AppName = "inventory-agent.exe"
+$MSIName = "InventoryAgent.msi"
 $Version = if ($env:AGENT_VERSION) { $env:AGENT_VERSION } else { "1.0.0" }
 $WixVersion = "$Version.0"  # WiX exige 4 partes: X.Y.Z.0
 
 # 1. Compile Go binary
-Write-Host "Compiling Go binary v$Version..." -ForegroundColor Cyan
+Write-Host "Compilando Go binary v$Version..." -ForegroundColor Cyan
 $env:GOOS = "windows"
 $env:GOARCH = "amd64"
 go build -ldflags "-X main.Version=$Version" -o $AppName ./cmd/agent/
@@ -38,12 +38,15 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
-# Light (Linker)
-& $Light -ext WixUIExtension .\wix\agent.wixobj -o $MSIName
+# Light (Linker) — saída direto na pasta AgentInstall
+$OutDir = ".\AgentInstall"
+if (-not (Test-Path $OutDir)) { New-Item -ItemType Directory -Path $OutDir | Out-Null }
+$MSIPath = Join-Path $OutDir $MSIName
+& $Light -ext WixUIExtension .\wix\agent.wixobj -o $MSIPath
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "WiX Link failed." -ForegroundColor Red
     exit $LASTEXITCODE
 }
 
-Write-Host "Successfully generated $MSIName" -ForegroundColor Green
+Write-Host "Successfully generated $MSIPath" -ForegroundColor Green

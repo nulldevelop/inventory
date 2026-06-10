@@ -2,7 +2,7 @@
 @import "tw-animate-css";
 
 /* =========================================================================
-   NetWatch — Design tokens
+   Inventory — Design tokens
    Um único sistema semântico, em duas camadas: claro (:root) e escuro (.dark).
    As primitivas (ui/*) consomem o vocabulário shadcn; os componentes de domínio
    consomem os mesmos tokens (+ aliases legados mantidos durante a migração).
@@ -26,7 +26,7 @@
   --secondary: oklch(0.96 0.006 175);
   --secondary-foreground: oklch(0.28 0.02 175);
   --muted: oklch(0.965 0.005 175);
-  --muted-foreground: oklch(0.5 0.013 175);
+  --muted-foreground: oklch(0.44 0.015 175);
   --accent: oklch(0.95 0.012 170);
   --accent-foreground: oklch(0.28 0.03 170);
 
@@ -41,7 +41,7 @@
   --status-online: oklch(0.56 0.13 158);
   --status-offline: oklch(0.58 0.214 27);
   --status-warn: oklch(0.7 0.15 75);
-  --status-idle: oklch(0.6 0.013 175);
+  --status-idle: oklch(0.5 0.013 175);
 
   /* atmosfera */
   --glow: oklch(0.46 0.082 168 / 0.05);

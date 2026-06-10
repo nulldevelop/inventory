@@ -73,14 +73,14 @@ export default function TopBar({
             <span className="relative flex h-7 w-7 items-center justify-center rounded-md bg-primary/10 ring-1 ring-primary/20">
               <Image
                 src="/spider-eye-svgrepo-com.svg"
-                alt="NetWatch"
+                alt="Inventory"
                 width={16}
                 height={16}
                 className="h-4 w-4 opacity-80 transition-opacity group-hover:opacity-100"
               />
             </span>
             <span className="font-(--font-mono) text-[13px] font-semibold tracking-[2px] uppercase text-foreground">
-              Net<span className="text-primary">Watch</span>
+              Inven<span className="text-primary">tory</span>
             </span>
           </Link>
 

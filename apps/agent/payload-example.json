@@ -6,17 +6,11 @@
   "uptime_seconds": 86400,
   "cpu_model": "Intel(R) Core(TM) i7-10700K CPU @ 3.80GHz",
   "cpu_vendor": "GenuineIntel",
-  "cpu_usage_percent": 15.4,
   "cpu_frequency_mhz": 3800,
   "cpu_physical_cores": 8,
   "cpu_logical_cores": 16,
-  "cpu_usage_per_core": [12.5, 18.3, 10.0, 22.1, 14.7, 8.9, 19.4, 16.2, 11.0, 13.5, 17.8, 9.2, 20.1, 15.6, 12.0, 14.3],
-  "cpu_temp": 62.5,
   "memory": {
     "total_bytes": 17179869184,
-    "used_bytes": 8589934592,
-    "free_bytes": 8589934592,
-    "percentage": 50.0,
     "slots": [
       {
         "manufacturer": "Kingston",
@@ -36,36 +30,21 @@
       "mountpoint": "C:\\",
       "fstype": "NTFS",
       "total_bytes": 512110190592,
-      "used_bytes": 256055095296,
-      "free_bytes": 256055095296,
-      "percentage": 50.0,
       "model": "Samsung SSD 970 EVO Plus 512GB",
       "manufacturer": "Samsung"
-    }
-  ],
-  "disk_io": [
-    {
-      "device": "PhysicalDrive0",
-      "read_bytes_per_sec": 5242880,
-      "write_bytes_per_sec": 2097152
     }
   ],
   "network": [
     {
       "interface": "Ethernet",
       "ips": ["192.168.1.100/24"],
-      "mac": "AA:BB:CC:DD:EE:FF",
-      "bytes_sent": 104857600,
-      "bytes_recv": 524288000,
-      "bytes_sent_per_sec": 12800,
-      "bytes_recv_per_sec": 51200
+      "mac": "AA:BB:CC:DD:EE:FF"
     }
   ],
   "gpus": [
     {
       "model": "NVIDIA GeForce RTX 3080",
       "vram_total_bytes": 10737418240,
-      "vram_used_bytes": 3221225472,
       "driver_version": "31.0.15.3623"
     }
   ],
@@ -84,7 +63,6 @@
     "model": "ROG STRIX Z490-E GAMING",
     "serial_number": "MB-SERIAL-001"
   },
-  "battery": null,
   "defender_enabled": true,
   "registration": {
     "user_name": "João Silva",

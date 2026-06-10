@@ -1,20 +1,11 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { activeAlerts } from '../ingest/route'
 
 export const revalidate = 10
 
 export async function GET() {
   const aliases = await prisma.agentAlias.findMany().catch(() => [])
   const aliasMap = new Map(aliases.map((a) => [a.serialNumber, a]))
-
-  // Alertas de threshold (CPU, RAM, disco, temp)
-  const thresholdAlerts = Array.from(activeAlerts.entries()).map(
-    ([serial, v]) => {
-      const alias = aliasMap.get(serial)
-      return { serial, ...v, displayName: alias?.customName ?? v.hostname }
-    },
-  )
 
   // Alertas de mudanca de hardware (ultimas 24h)
   const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
@@ -75,5 +66,5 @@ export async function GET() {
     },
   )
 
-  return NextResponse.json([...thresholdAlerts, ...hardwareAlerts])
+  return NextResponse.json(hardwareAlerts)
 }

@@ -19,7 +19,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'NetWatch \u2014 Monitoramento de Agentes',
+  title: 'Inventory \u2014 Monitoramento de Agentes',
   description: 'Dashboard profissional de monitoramento de hardware e rede',
   icons: {
     icon: '/spider-eye-svgrepo-com.svg',

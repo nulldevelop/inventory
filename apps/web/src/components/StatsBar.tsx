@@ -22,49 +22,6 @@ const toneText: Record<Tone, string> = {
   neutral: 'text-foreground',
 }
 
-function gaugeColor(value: number): string {
-  if (value >= 85) return 'var(--status-offline)'
-  if (value >= 70) return 'var(--status-warn)'
-  return 'var(--status-online)'
-}
-
-function GaugeRing({ value, size = 50 }: { value: number; size?: number }) {
-  const r = (size - 8) / 2
-  const circumference = 2 * Math.PI * r
-  const offset = circumference - (Math.min(value, 100) / 100) * circumference
-  const color = gaugeColor(value)
-
-  return (
-    <div className="relative" style={{ width: size, height: size }}>
-      <svg
-        className="gauge-ring"
-        width={size}
-        height={size}
-        role="img"
-        aria-label={`Medidor de ${value.toFixed(0)}%`}
-      >
-        <title>{`${value.toFixed(0)}%`}</title>
-        <circle className="gauge-track" cx={size / 2} cy={size / 2} r={r} />
-        <circle
-          className="gauge-fill"
-          cx={size / 2}
-          cy={size / 2}
-          r={r}
-          style={{
-            stroke: color,
-            strokeDasharray: circumference,
-            strokeDashoffset: offset,
-          }}
-        />
-      </svg>
-      <span className="absolute inset-0 flex items-center justify-center font-(--font-mono) text-[12px] font-bold tabular-nums text-foreground">
-        {value.toFixed(0)}
-        <span className="ml-0.5 text-[8px] text-muted-foreground">%</span>
-      </span>
-    </div>
-  )
-}
-
 function StatCard({
   label,
   value,
@@ -104,25 +61,6 @@ function StatCard({
         </span>
       )}
     </button>
-  )
-}
-
-function AvgGaugeCard({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4">
-      <GaugeRing value={value} />
-      <div className="flex flex-col gap-1">
-        <span className="font-(--font-mono) text-[10px] font-medium tracking-[1.5px] uppercase text-muted-foreground">
-          {label}
-        </span>
-        <span
-          className="font-(--font-mono) text-[1.4rem] font-bold leading-none tabular-nums"
-          style={{ color: gaugeColor(value) }}
-        >
-          {value.toFixed(0)}%
-        </span>
-      </div>
-    </div>
   )
 }
 
@@ -201,23 +139,11 @@ export default function StatsBar({
   const offlinePct =
     agents.length > 0 ? ((offline / agents.length) * 100).toFixed(1) : '0'
 
-  const onlineAgents = agents.filter((a) => a.isOnline)
-  const avgCpu =
-    onlineAgents.length > 0
-      ? onlineAgents.reduce((s, a) => s + (a.cpu_usage_percent || 0), 0) /
-        onlineAgents.length
-      : 0
-  const avgRam =
-    onlineAgents.length > 0
-      ? onlineAgents.reduce((s, a) => s + (a.memory?.percentage || 0), 0) /
-        onlineAgents.length
-      : 0
-
   const alertCount = alerts.reduce((s, a) => s + a.alerts.length, 0)
 
   return (
     <div className="mb-4">
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
         <StatCard
           label="Online"
           value={online}
@@ -248,8 +174,6 @@ export default function StatsBar({
             if (alertCount > 0) onAlertsClick()
           }}
         />
-        <AvgGaugeCard label="CPU Média" value={avgCpu} />
-        <AvgGaugeCard label="RAM Média" value={avgRam} />
       </div>
 
       <SecretariaBreakdown agents={agents} />

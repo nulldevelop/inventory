@@ -56,8 +56,6 @@ export async function GET(req: NextRequest) {
         serialNumber: true,
         hostname: true,
         osJson: true,
-        cpuUsagePercent: true,
-        memoryJson: true,
         isOnline: true,
         lastUpdateAt: true,
         alias: {
@@ -79,9 +77,6 @@ export async function GET(req: NextRequest) {
       grupo: agent.alias?.grupo ?? null,
       subgrupo: agent.alias?.subgrupo ?? null,
       os: agent.osJson,
-      cpu_usage_percent: agent.cpuUsagePercent,
-      gpu_usage_percent: 0, // Calculado sob demanda no DetailView ou simplificado aqui
-      memory: agent.memoryJson,
       lastUpdate: agent.lastUpdateAt.toISOString(),
       isOnline: agent.isOnline,
       agent_version: '...', // Simplificado para performance

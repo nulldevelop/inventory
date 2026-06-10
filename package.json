@@ -4,10 +4,10 @@
   "private": true,
   "description": "Monorepo: agente de hardware (Go) + aplicação web Next.js (front + back/API).",
   "scripts": {
-    "web:dev": "pnpm --filter netwath-front dev",
-    "web:build": "pnpm --filter netwath-front build",
-    "web:start": "pnpm --filter netwath-front start",
-    "web:lint": "pnpm --filter netwath-front lint",
+    "web:dev": "pnpm --filter inventory-web dev",
+    "web:build": "pnpm --filter inventory-web build",
+    "web:start": "pnpm --filter inventory-web start",
+    "web:lint": "pnpm --filter inventory-web lint",
     "agent:build": "cd apps/agent && go build -o agent.exe ./cmd/agent",
     "agent:run": "cd apps/agent && go run ./cmd/agent"
   },

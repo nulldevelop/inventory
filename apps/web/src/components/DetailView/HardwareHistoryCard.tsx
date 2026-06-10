@@ -33,7 +33,7 @@ const componentColors: Record<
   cpu: {
     bg: 'rgba(0, 103, 79,0.06)',
     border: 'rgba(0, 103, 79,0.2)',
-    text: 'text-accent',
+    text: 'text-primary',
   },
   gpu: {
     bg: 'rgba(0, 103, 79,0.06)',
@@ -149,10 +149,10 @@ export default function HardwareHistoryCard({
   }, [fetchLogs])
 
   return (
-    <Card className="bg-[rgba(0, 18, 13,0.7)] border-[rgba(255,255,255,0.04)] transition-all duration-300 hover:border-[rgba(0, 103, 79,0.15)] w-full">
-      <CardHeader className="pb-3 mb-0 border-b border-[rgba(255,255,255,0.04)]">
+    <Card className="bg-card border-border transition-all duration-300 hover:border-primary/20 w-full">
+      <CardHeader className="pb-3 mb-0 border-b border-border">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-[rgba(0, 103, 79,0.06)] border border-[rgba(0, 103, 79,0.12)] rounded-lg flex items-center justify-center text-accent">
+          <div className="w-8 h-8 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center text-primary">
             <svg
               width="16"
               height="16"
@@ -168,11 +168,11 @@ export default function HardwareHistoryCard({
               <polyline points="12 6 12 12 16 14" />
             </svg>
           </div>
-          <h3 className="text-base uppercase tracking-[1.5px] text-text-dim font-(--font-mono)">
+          <h3 className="text-base uppercase tracking-[1.5px] text-secondary-foreground font-(--font-mono)">
             Historico de Alteracoes
           </h3>
           {logs.length > 0 && (
-            <span className="ml-auto font-(--font-mono) text-[11px] text-text-muted bg-[rgba(255,255,255,0.04)] px-2.5 py-1 rounded-lg">
+            <span className="ml-auto font-(--font-mono) text-[11px] text-muted-foreground bg-muted px-2.5 py-1 rounded-lg">
               {logs.length} {logs.length === 1 ? 'alteracao' : 'alteracoes'}
             </span>
           )}
@@ -180,7 +180,7 @@ export default function HardwareHistoryCard({
       </CardHeader>
       <CardContent className="max-h-[500px] overflow-y-auto">
         {loading ? (
-          <div className="flex items-center justify-center py-8 text-text-muted">
+          <div className="flex items-center justify-center py-8 text-muted-foreground">
             <div className="relative">
               <div className="w-4 h-4 rounded-full bg-accent/20 animate-ping absolute inset-0" />
               <div className="w-4 h-4 rounded-full bg-accent relative" />
@@ -190,7 +190,7 @@ export default function HardwareHistoryCard({
             </span>
           </div>
         ) : logs.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-10 text-text-muted">
+          <div className="flex flex-col items-center justify-center py-10 text-muted-foreground">
             <svg
               width="32"
               height="32"
@@ -213,7 +213,7 @@ export default function HardwareHistoryCard({
         ) : (
           <div className="relative">
             {/* Timeline line */}
-            <div className="absolute left-[15px] top-2 bottom-2 w-px bg-[rgba(255,255,255,0.06)]" />
+            <div className="absolute left-[15px] top-2 bottom-2 w-px bg-muted" />
 
             {logs.map((log) => {
               const colors =
@@ -229,7 +229,7 @@ export default function HardwareHistoryCard({
                     }}
                   />
 
-                  <div className="bg-[rgba(0, 34, 25,0.6)] border border-[rgba(255,255,255,0.04)] rounded-xl p-3.5 transition-all duration-200 hover:border-[rgba(255,255,255,0.08)]">
+                  <div className="bg-muted/40 border border-border rounded-xl p-3.5 transition-all duration-200 hover:border-border">
                     <div className="flex items-center gap-2 mb-2.5 flex-wrap">
                       <span
                         className={`font-(--font-mono) text-[10px] uppercase tracking-[1px] px-2 py-0.5 rounded-md ${colors.text}`}
@@ -240,11 +240,11 @@ export default function HardwareHistoryCard({
                       >
                         {componentLabels[log.component] || log.component}
                       </span>
-                      <span className="font-(--font-mono) text-[10px] text-text-muted tracking-[0.5px]">
+                      <span className="font-(--font-mono) text-[10px] text-muted-foreground tracking-[0.5px]">
                         {fieldLabels[log.field] || log.field}
                       </span>
                       <span
-                        className="ml-auto font-(--font-mono) text-[10px] text-text-muted tabular-nums"
+                        className="ml-auto font-(--font-mono) text-[10px] text-muted-foreground tabular-nums"
                         title={new Date(log.timestamp).toLocaleString('pt-BR')}
                       >
                         {timeAgo(log.timestamp)}
@@ -252,12 +252,12 @@ export default function HardwareHistoryCard({
                     </div>
 
                     <div className="flex items-center gap-2 flex-wrap">
-                      <div className="flex items-center gap-1.5 bg-[rgba(239,68,68,0.04)] border border-[rgba(239,68,68,0.12)] rounded-lg px-2.5 py-1.5 min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 bg-offline/5 border border-offline/15 rounded-lg px-2.5 py-1.5 min-w-0 flex-1">
                         <span className="font-(--font-mono) text-[9px] uppercase tracking-[1px] text-red shrink-0">
                           Antes
                         </span>
                         <span
-                          className="font-(--font-mono) text-[12px] text-text truncate"
+                          className="font-(--font-mono) text-[12px] text-foreground truncate"
                           title={formatValue(log.field, log.oldValue)}
                         >
                           {formatValue(log.field, log.oldValue)}
@@ -271,19 +271,19 @@ export default function HardwareHistoryCard({
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="2"
-                        className="text-text-muted shrink-0"
+                        className="text-muted-foreground shrink-0"
                       >
                         <title>Para</title>
                         <path d="M5 12h14" />
                         <path d="m12 5 7 7-7 7" />
                       </svg>
 
-                      <div className="flex items-center gap-1.5 bg-[rgba(16,185,129,0.04)] border border-[rgba(16,185,129,0.12)] rounded-lg px-2.5 py-1.5 min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 bg-online/5 border border-online/15 rounded-lg px-2.5 py-1.5 min-w-0 flex-1">
                         <span className="font-(--font-mono) text-[9px] uppercase tracking-[1px] text-green shrink-0">
                           Depois
                         </span>
                         <span
-                          className="font-(--font-mono) text-[12px] text-text truncate"
+                          className="font-(--font-mono) text-[12px] text-foreground truncate"
                           title={formatValue(log.field, log.newValue)}
                         >
                           {formatValue(log.field, log.newValue)}

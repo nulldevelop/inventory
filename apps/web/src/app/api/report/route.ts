@@ -97,9 +97,7 @@ export async function GET(req: NextRequest) {
     'Processador',
     'Nucleos CPU',
     'Memoria RAM',
-    'RAM Uso %',
     'HD',
-    'Disco Uso %',
     'GPU',
     'VRAM GB',
     'IP Address',
@@ -141,7 +139,6 @@ export async function GET(req: NextRequest) {
 
     const mem = raw?.memory
     const ramTotal = calculateRAM(mem)
-    const ramUsage = mem?.percentage ?? mem?.used_percent ?? 0
     const memSticks =
       mem?.memories?.length ?? mem?.banks?.length ?? mem?.slots?.length ?? 1
     const ramFormat =
@@ -151,7 +148,6 @@ export async function GET(req: NextRequest) {
 
     const disks = raw?.disks
     let diskInfo = 'N/A'
-    let diskUsagePct = 'N/A'
     if (disks && Array.isArray(disks) && disks.length > 0) {
       const disk = disks[0]
       const diskTypeVal = (
@@ -177,13 +173,10 @@ export async function GET(req: NextRequest) {
         const modelMatch = String(disk.model).match(/(\d+)\s*TB/i)
         if (modelMatch) sizeGB = parseInt(modelMatch[1], 10) * 1000
       }
-      const usageVal =
-        disk.percentage ?? disk.usage_percent ?? disk.used_percent ?? 0
 
       const diskTypeClean = cleanValue(diskTypeVal) || 'N/A'
       const diskSizeStr = sizeGB > 0 ? `${sizeGB} GB` : 'N/A'
       diskInfo = `${diskTypeClean} | ${diskSizeStr}`
-      diskUsagePct = usageVal > 0 ? `${usageVal.toFixed(1)}%` : 'N/A'
     }
 
     const gpus = raw?.gpus
@@ -240,9 +233,7 @@ export async function GET(req: NextRequest) {
       cpu,
       cpuCores,
       ramFormat,
-      ramUsage > 0 ? `${ramUsage.toFixed(1)}%` : 'N/A',
       diskInfo,
-      diskUsagePct,
       gpuInfo,
       vramInfo,
       ip,

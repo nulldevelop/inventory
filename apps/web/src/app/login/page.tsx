@@ -38,14 +38,14 @@ export default function LoginPage() {
           <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/20">
             <Image
               src="/spider-eye-svgrepo-com.svg"
-              alt="NetWatch"
+              alt="Inventory"
               width={26}
               height={26}
               className="opacity-85"
             />
           </span>
           <h1 className="font-(--font-mono) text-[18px] font-semibold tracking-[3px] uppercase text-foreground">
-            Net<span className="text-primary">Watch</span>
+            Inven<span className="text-primary">tory</span>
           </h1>
           <p className="text-center text-sm text-muted-foreground">
             Monitoramento de agentes em tempo real

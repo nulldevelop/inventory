@@ -98,7 +98,6 @@ export async function GET(req: NextRequest) {
 
     const mem = raw?.memory
     const ramTotal = calculateRAM(mem)
-    const ramUsage = mem?.percentage ?? 0
     const memSticks = mem?.slots?.length ?? 1
     const ramFormat =
       ramTotal > 0
@@ -107,16 +106,13 @@ export async function GET(req: NextRequest) {
 
     const disks = raw?.disks
     let diskInfo = 'N/A'
-    let diskUsagePct = 'N/A'
     if (disks && Array.isArray(disks) && disks.length > 0) {
       const disk = disks[0]
       const diskTypeVal = disk.fstype ?? disk.type ?? disk.model ?? 'Unknown'
       const sizeBytes = disk.total_bytes ?? disk.size ?? 0
       const sizeGB =
         sizeBytes > 0 ? Math.round(sizeBytes / (1024 * 1024 * 1024)) : 0
-      const usageVal = disk.percentage ?? disk.usage_percent ?? 0
       diskInfo = `${diskTypeVal} - ${sizeGB > 0 ? `${sizeGB} GB` : 'N/A'}`
-      diskUsagePct = usageVal > 0 ? `${usageVal.toFixed(1)}%` : 'N/A'
     }
 
     const gpus = raw?.gpus
@@ -161,9 +157,7 @@ export async function GET(req: NextRequest) {
       cpu,
       cpuCores,
       ramFormat,
-      ramUsage: ramUsage > 0 ? `${ramUsage.toFixed(1)}%` : 'N/A',
       diskInfo,
-      diskUsagePct,
       gpuInfo,
       ip,
       mac,

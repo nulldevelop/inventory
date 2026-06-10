@@ -76,9 +76,7 @@ interface AgentData {
   cpu: string
   cpuCores: string
   ramFormat: string
-  ramUsage: string
   diskInfo: string
-  diskUsagePct: string
   gpuInfo: string
   ip: string
   mac: string

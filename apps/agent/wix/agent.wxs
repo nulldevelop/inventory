@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Id="*" Name="NetWatch - Hardware Monitoring Agent" Language="1033" Version="3.4.0.0" Manufacturer="NullPHR Development" UpgradeCode="e20c718e-c91f-4823-9d59-a3a459639a24">
+    <Product Id="*" Name="Inventory - Hardware Monitoring Agent" Language="1033" Version="3.5.0.0" Manufacturer="Null Development" UpgradeCode="e20c718e-c91f-4823-9d59-a3a459639a24">
         <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
         <MajorUpgrade
@@ -13,6 +13,9 @@
         <!-- TESTE LOCAL: reverter para https://netwatch.nullphr.com.br/api/ingest antes de release -->
         <Property Id="API_URL" Value="http://localhost:3000/api/ingest" />
         <Property Id="INTERVAL" Value="28800" />
+        <!-- Token de autenticação com o backend (Bearer). Pode ser sobrescrito
+             na instalação silenciosa: msiexec /i HardwareAgent.msi TOKEN=xxxx -->
+        <Property Id="TOKEN" Value="7750acaf865bd4e507c5787e58d7a89b3f18746acde53f8f9cbac70f1638f627" />
 
         <!-- ============================================================
              Cadastro informado na instalação (Nome/Secretaria/Departamento).
@@ -49,11 +52,12 @@
     <Fragment>
         <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
             <Component Id="AgentExecutable" Guid="d6da1d43-0612-44c2-bad3-a4451d403c26">
-                <File Id="AgentExe" Source="agent.exe" KeyPath="yes" Checksum="yes" />
+                <File Id="AgentExe" Source="inventory-agent.exe" KeyPath="yes" Checksum="yes" />
 
                 <!-- Variáveis de Ambiente para Configuração -->
                 <Environment Id="EnvApiUrl" Name="AGENT_API_URL" Value="[API_URL]" Action="set" Part="all" System="yes" />
                 <Environment Id="EnvInterval" Name="AGENT_INTERVAL_SECONDS" Value="[INTERVAL]" Action="set" Part="all" System="yes" />
+                <Environment Id="EnvApiToken" Name="AGENT_API_TOKEN" Value="[TOKEN]" Action="set" Part="all" System="yes" />
 
                 <!-- Service Installation -->
                 <ServiceInstall Id="ServiceInstaller"
@@ -103,7 +107,7 @@
             <DialogRef Id="UserExit" />
             <DialogRef Id="ExitDialog" />
 
-            <Dialog Id="CadastroDlg" Width="370" Height="270" Title="Cadastro do Agente NetWatch">
+            <Dialog Id="CadastroDlg" Width="370" Height="270" Title="Cadastro do Agente Inventory">
                 <Control Id="Title" Type="Text" X="15" Y="15" Width="340" Height="15" Transparent="yes" NoPrefix="yes">
                     <Text>{\WixUI_Font_Title}Identificação da máquina</Text>
                 </Control>
