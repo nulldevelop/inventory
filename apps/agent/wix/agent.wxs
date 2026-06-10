@@ -95,6 +95,11 @@
             <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
             <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
             <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+            <!-- Estilos para deixar a tela mais apresentável (cor via RGB) -->
+            <TextStyle Id="WixUI_Font_Header" FaceName="Tahoma" Size="13" Bold="yes" Red="0" Green="70" Blue="140" />
+            <TextStyle Id="WixUI_Font_Subtitle" FaceName="Tahoma" Size="8" Red="90" Green="90" Blue="90" />
+            <TextStyle Id="WixUI_Font_Section" FaceName="Tahoma" Size="8" Bold="yes" Red="0" Green="70" Blue="140" />
+            <TextStyle Id="WixUI_Font_Hint" FaceName="Tahoma" Size="8" Red="120" Green="120" Blue="120" />
             <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
 
             <DialogRef Id="ErrorDlg" />
@@ -108,22 +113,24 @@
             <DialogRef Id="ExitDialog" />
 
             <Dialog Id="CadastroDlg" Width="370" Height="270" Title="Cadastro do Agente Inventory">
-                <Control Id="Title" Type="Text" X="15" Y="15" Width="340" Height="15" Transparent="yes" NoPrefix="yes">
-                    <Text>{\WixUI_Font_Title}Identificação da máquina</Text>
+                <Control Id="Title" Type="Text" X="20" Y="14" Width="335" Height="20" Transparent="yes" NoPrefix="yes">
+                    <Text>{\WixUI_Font_Header}Identificação da máquina</Text>
                 </Control>
-                <Control Id="Description" Type="Text" X="15" Y="33" Width="340" Height="20" Transparent="yes" NoPrefix="yes">
-                    <Text>Informe os dados de cadastro. Eles serão enviados junto com a telemetria.</Text>
+                <Control Id="Description" Type="Text" X="20" Y="36" Width="335" Height="16" Transparent="yes" NoPrefix="yes">
+                    <Text>{\WixUI_Font_Subtitle}Informe os dados abaixo. Eles serão enviados junto com a telemetria.</Text>
                 </Control>
                 <Control Id="BannerLine" Type="Line" X="0" Y="58" Width="370" Height="0" />
 
-                <Control Id="NameLabel" Type="Text" X="20" Y="75" Width="120" Height="12" NoPrefix="yes" Text="Nome (usuário):" />
-                <Control Id="NameEdit" Type="Edit" X="20" Y="88" Width="330" Height="18" Property="REG_USERNAME" Indirect="no" />
+                <Control Id="FieldsGroup" Type="GroupBox" X="15" Y="68" Width="340" Height="148" Text="{\WixUI_Font_Section}Dados de cadastro" />
 
-                <Control Id="DepartamentoLabel" Type="Text" X="20" Y="115" Width="200" Height="12" NoPrefix="yes" Text="Departamento:" />
-                <Control Id="DepartamentoEdit" Type="Edit" X="20" Y="128" Width="330" Height="18" Property="REG_DEPARTAMENTO" Indirect="no" />
+                <Control Id="NameLabel" Type="Text" X="28" Y="84" Width="314" Height="12" NoPrefix="yes" Text="Nome (usuário)" />
+                <Control Id="NameEdit" Type="Edit" X="28" Y="96" Width="314" Height="18" Property="REG_USERNAME" Indirect="no" />
 
-                <Control Id="SecretariaLabel" Type="Text" X="20" Y="155" Width="120" Height="12" NoPrefix="yes" Text="Secretaria:" />
-                <Control Id="SecretariaCombo" Type="ComboBox" X="20" Y="168" Width="330" Height="18" Property="REG_SECRETARIA" Sorted="no" ComboList="yes">
+                <Control Id="DepartamentoLabel" Type="Text" X="28" Y="124" Width="314" Height="12" NoPrefix="yes" Text="Departamento" />
+                <Control Id="DepartamentoEdit" Type="Edit" X="28" Y="136" Width="314" Height="18" Property="REG_DEPARTAMENTO" Indirect="no" />
+
+                <Control Id="SecretariaLabel" Type="Text" X="28" Y="164" Width="314" Height="12" NoPrefix="yes" Text="Secretaria" />
+                <Control Id="SecretariaCombo" Type="ComboBox" X="28" Y="176" Width="314" Height="120" Property="REG_SECRETARIA" Sorted="no" ComboList="yes">
                     <ComboBox Property="REG_SECRETARIA">
                         <ListItem Text="Administração" Value="Administração" />
                         <ListItem Text="Cultura" Value="Cultura" />
@@ -142,8 +149,8 @@
                     </ComboBox>
                 </Control>
 
-                <Control Id="Hint" Type="Text" X="20" Y="195" Width="330" Height="12" Transparent="yes" NoPrefix="yes">
-                    <Text>{\WixUI_Font_Normal}Os três campos são obrigatórios.</Text>
+                <Control Id="Hint" Type="Text" X="20" Y="221" Width="330" Height="12" Transparent="yes" NoPrefix="yes">
+                    <Text>{\WixUI_Font_Hint}Os três campos são obrigatórios.</Text>
                 </Control>
 
                 <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
