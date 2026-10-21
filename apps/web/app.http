@@ -1,9 +1,2 @@
 POST https://netwatch.nullphr.com.br/api/sign-up/email
 Content-Type: application/json
-
-{
-  "name": "Pedro Henrique Andrade",
-  "email": "contato@nullphr.com.br",
-  "password": "Alfa152100@.",
-  "image": "https://example.com/image.png"
-}
