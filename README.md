@@ -2,9 +2,10 @@
 
 > Monorepo de inventário e monitoramento de hardware Windows: agente em Go que roda como serviço no endpoint e dashboard Next.js com alertas de mudança de hardware, comandos remotos e exportação de relatórios.
 
-[**Repositório**](https://github.com/nulldevelop/inventory)
-
-<!-- Adicione uma captura de tela real do sistema, se disponível. -->
+| | |
+|---|---|
+| **Tipo** | Projeto próprio · monorepo (agente Go + dashboard web) |
+| **Meu papel** | Design e desenvolvimento completos |
 
 ## Sobre o projeto
 
@@ -32,7 +33,7 @@ O diferencial técnico é o modelo de **snapshot de inventário** (telemetria a 
 
 > O projeto foi pivotado de um produto de monitoramento ("NetWatch") para inventário; restos do pivot (modelo `MetricSnapshot`, campos `cpuUsagePercent`/`cpuTemp`) permanecem no schema sem uso.
 
-## Tecnologias
+## Stack
 
 - **Frontend:** Next.js 16.2.1 (App Router, React Compiler), React 19.2.4, Tailwind CSS 4, shadcn/ui + Radix, lucide-react, sonner, next-themes, @react-pdf/renderer, fontes DM Sans/IBM Plex Mono.
 - **Backend:** API routes do próprio Next.js (front + back num deploy), Better Auth 1.6 (e-mail/senha), agente Go 1.26+ (gopsutil, WMI, go-ole, serviço Windows via `golang.org/x/sys`).
@@ -76,7 +77,7 @@ Decisões importantes:
 - Servidor MariaDB/MySQL acessível via `DATABASE_URL`
 - AWS S3 (bucket de releases do agente) — apenas para publicar auto-update
 
-## Como executar localmente
+## Como rodar
 
 ### 1. Clone o repositório
 
@@ -171,6 +172,4 @@ Sem licença definida. Todos os direitos reservados.
 
 ## Autor
 
-**Pedro Andrade (nulldevelop / devpedroA)**
-
-- GitHub: https://github.com/nulldevelop
+**Pedro Andrade** — Desenvolvedor Full Stack · [null.dev](https://nulldev.com.br) · [LinkedIn](https://linkedin.com/in/pedrodevfull) · [GitHub](https://github.com/nulldevelop)
